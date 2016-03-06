@@ -1,4 +1,3 @@
 package: github.com/mantzas/substitute
 import:
 - package: github.com/mantzas/adaptlog
-  version: ^2.0.0
