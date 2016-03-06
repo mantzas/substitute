@@ -3,9 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/mantzas/substitute/http/middleware"
-	"log"
 	"net/http"
+
+	"github.com/mantzas/adaptlog"
+	"github.com/mantzas/substitute/http/middleware"
+	"github.com/mantzas/substitute/log"
 )
 
 func handler1() http.Handler {
@@ -20,8 +22,8 @@ func handler2() http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-        w.WriteHeader(http.StatusOK)
-        w.Write([]byte("handler2"))
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("handler2"))
 	})
 }
 
@@ -38,14 +40,16 @@ func main() {
 	fmt.Printf("Service starting on port %d with management port %d.", *port, *portMgmt)
 	fmt.Println()
 
+	adaptlog.ConfigStandardLogger(new(log.Logger))
+
 	go func() {
 
 		fmt.Println("Starting management service.")
-		log.Fatal(http.ListenAndServe(":8081", getMgmtServerMux()))
+		adaptlog.Logger.Fatal(http.ListenAndServe(":8081", getMgmtServerMux()))
 	}()
 
 	fmt.Println("Starting service.")
-	log.Fatal(http.ListenAndServe(":8080", getServerMux()))
+	adaptlog.Logger.Fatal(http.ListenAndServe(":8080", getServerMux()))
 }
 
 func getMgmtServerMux() *http.ServeMux {
