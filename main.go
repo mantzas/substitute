@@ -30,6 +30,7 @@ func handler2() http.Handler {
 func main() {
 	port := flag.Int("port", 8080, "port of the substitution service")
 	portMgmt := flag.Int("mgmtport", 8081, "port of the substitution service")
+	//TODO: should parse the log level
 	flag.Parse()
 
 	if *port == 0 || *portMgmt == 0 {
@@ -40,16 +41,16 @@ func main() {
 	fmt.Printf("Service starting on port %d with management port %d.", *port, *portMgmt)
 	fmt.Println()
 
-	adaptlog.ConfigStandardLogger(new(log.Logger))
+	adaptlog.Configure(new(log.Logger), adaptlog.AnyLevel)
 
 	go func() {
 
 		fmt.Println("Starting management service.")
-		adaptlog.Logger.Fatal(http.ListenAndServe(":8081", getMgmtServerMux()))
+		adaptlog.Fatal(http.ListenAndServe(":8081", getMgmtServerMux()))
 	}()
 
 	fmt.Println("Starting service.")
-	adaptlog.Logger.Fatal(http.ListenAndServe(":8080", getServerMux()))
+	adaptlog.Fatal(http.ListenAndServe(":8080", getServerMux()))
 }
 
 func getMgmtServerMux() *http.ServeMux {

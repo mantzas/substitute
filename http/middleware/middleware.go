@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	log "github.com/mantzas/adaptlog"
+	"github.com/mantzas/adaptlog"
 )
 
 type statusLoggingResponseWriter struct {
@@ -54,7 +54,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		lw := &statusLoggingResponseWriter{-1, false, w}
 		startTime := time.Now()
 		next.ServeHTTP(lw, r)
-		log.Logger.Printf("host=%s method=%s route=%s status=%d time=%s", r.Host, r.Method, r.URL.String(), lw.status, time.Since(startTime))
+		adaptlog.Printf("host=%s method=%s route=%s status=%d time=%s", r.Host, r.Method, r.URL.String(), lw.status, time.Since(startTime))
 	})
 }
 
@@ -65,7 +65,7 @@ func RecoveryMiddleware(next http.Handler) http.Handler {
 
 		defer func() {
 			if err := recover(); err != nil {
-				log.Logger.Printf("[ERROR] %s", err)
+				adaptlog.Printf("[ERROR] %s", err)
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 		}()
@@ -81,7 +81,7 @@ func PostValidationMiddleware(next http.Handler) http.Handler {
 
 		if r.Method != "POST" {
 
-			log.Logger.Printf("[WARN] Http method POST was expected, but received %s instead", r.Method)
+			adaptlog.Printf("[WARN] Http method POST was expected, but received %s instead", r.Method)
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 			return
 		}
@@ -96,8 +96,8 @@ func GetValidationMiddleware(next http.Handler) http.Handler {
 
 		if r.Method != "GET" {
 
-			log.Logger.Printf("[WARN] Http method GET was expected, but received %s instead", r.Method)
-			log.Logger.Println()
+			adaptlog.Printf("[WARN] Http method GET was expected, but received %s instead", r.Method)
+			adaptlog.Println()
 			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 			return
 		}
