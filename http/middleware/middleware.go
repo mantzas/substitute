@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/mantzas/adaptlog"
 )
 
@@ -38,30 +39,27 @@ func (w *statusLoggingResponseWriter) WriteHeader(code int) {
 	w.statusHeaderWritten = true
 }
 
-// DefaultPostMiddleware which handles Logging, POST and Recover middleware
-func DefaultPostMiddleware(next http.Handler) http.Handler {
-	return LoggingMiddleware(RecoveryMiddleware(PostValidationMiddleware(next)))
+// DefaultMiddleware which handles Logging and Recover middleware
+func DefaultMiddleware(next httprouter.Handle) httprouter.Handle {
+	return LoggingMiddleware(RecoveryMiddleware(next))
 }
 
-// DefaultGetMiddleware which handles Logging, GET and Recover middleware
-func DefaultGetMiddleware(next http.Handler) http.Handler {
-	return LoggingMiddleware(RecoveryMiddleware(GetValidationMiddleware(next)))
-}
+// LoggingMiddleware for recovering from failed requests
+func LoggingMiddleware(next httprouter.Handle) httprouter.Handle {
 
-// LoggingMiddleware for logging requests
-func LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
 		lw := &statusLoggingResponseWriter{-1, false, w}
 		startTime := time.Now()
-		next.ServeHTTP(lw, r)
-		adaptlog.Printf("host=%s method=%s route=%s status=%d time=%s", r.Host, r.Method, r.URL.String(), lw.status, time.Since(startTime))
-	})
+		next(lw, r, ps)
+		adaptlog.Printf("host=%s method=%s route=%s status=%d time=%s params=%s", r.Host, r.Method, r.URL.String(), lw.status, time.Since(startTime), ps)
+	}
 }
 
 // RecoveryMiddleware for recovering from failed requests
-func RecoveryMiddleware(next http.Handler) http.Handler {
+func RecoveryMiddleware(next httprouter.Handle) httprouter.Handle {
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 		defer func() {
 			if err := recover(); err != nil {
@@ -70,37 +68,6 @@ func RecoveryMiddleware(next http.Handler) http.Handler {
 			}
 		}()
 
-		next.ServeHTTP(w, r)
-	})
-}
-
-// PostValidationMiddleware for validating POST requests
-func PostValidationMiddleware(next http.Handler) http.Handler {
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		if r.Method != "POST" {
-
-			adaptlog.Printf("[WARN] Http method POST was expected, but received %s instead", r.Method)
-			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
-// GetValidationMiddleware for validating GET requests
-func GetValidationMiddleware(next http.Handler) http.Handler {
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		if r.Method != "GET" {
-
-			adaptlog.Printf("[WARN] Http method GET was expected, but received %s instead", r.Method)
-			adaptlog.Println()
-			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
+		next(w, r, ps)
+	}
 }
