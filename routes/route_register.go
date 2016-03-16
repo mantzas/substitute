@@ -19,6 +19,7 @@ type RouteRegistration struct {
 	RouteRegex *regexp.Regexp
 	Response   string
 	Type       RequestType
+	Status     int
 }
 
 // Register contains the route registrations
@@ -32,7 +33,7 @@ type RouteRegister struct {
 }
 
 // Register a route
-func (rr *RouteRegister) Register(method string, requestType RequestType, routeRegex string, response string) error {
+func (rr *RouteRegister) Register(method string, requestType RequestType, routeRegex string, response string, status int) error {
 
 	r, err := regexp.Compile(routeRegex)
 	if err != nil {
@@ -44,24 +45,25 @@ func (rr *RouteRegister) Register(method string, requestType RequestType, routeR
 		Response:   response,
 		Type:       requestType,
 		RouteRegex: r,
+		Status:     status,
 	})
 	return nil
 }
 
 // Clear the register
-func (rr *RouteRegister) Clear(r RouteRegistration) {
+func (rr *RouteRegister) Clear() {
 	rr.routes = nil
 }
 
 // Match a registration
-func (rr *RouteRegister) Match(method string, requestType RequestType, route string) (bool, string) {
+func (rr *RouteRegister) Match(method string, requestType RequestType, route string) (bool, string, int) {
 
 	for _, r := range rr.routes {
 
 		if r.HTTPMethod == method || r.Type == requestType || r.RouteRegex.MatchString(route) {
-			return true, r.Response
+			return true, r.Response, r.Status
 		}
 	}
 
-	return false, ""
+	return false, "", 0
 }
