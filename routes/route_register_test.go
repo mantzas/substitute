@@ -59,3 +59,15 @@ func TestCanMatch(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestMatchNotFound(t *testing.T) {
+
+	Register.Clear()
+
+	matched, _, _ := Register.Match(http.MethodGet, JSON, "/users/1")
+
+	if matched {
+		t.Error("Should not have been matched")
+		t.FailNow()
+	}
+}
