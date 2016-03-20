@@ -1,8 +1,7 @@
 package main
 
 import (
-
-    . "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo"
 )
 
 var _ = Describe("main", func() {

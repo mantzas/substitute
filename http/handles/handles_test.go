@@ -1,52 +1,52 @@
 package handles
 
 import (
-	"github.com/mantzas/substitute/routes"
 	"net/http"
 	"net/http/httptest"
-	"testing"
+
+	"github.com/mantzas/substitute/routes"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 )
 
-func TestAnyHandleNoContentType(t *testing.T) {
+var _ = Describe("handles", func() {
 
-	request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
+	It("any handle with no content type", func() {
 
-	response := httptest.NewRecorder()
+		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
 
-	AnyHandle(response, request, nil)
+		response := httptest.NewRecorder()
 
-	if response.Code != http.StatusInternalServerError && response.Body.String() != "Content type not supported!" {
-		t.Errorf("Response code should have been internal error nut was %d", response.Code)
-		t.FailNow()
-	}
-}
+		AnyHandle(response, request, nil)
 
-func TestAnyHandleRouteNotMatched(t *testing.T) {
+		Expect(response.Code).To(Equal(http.StatusInternalServerError))
+		Expect(response.Body.String()).To(Equal("Content type not supported!"))
+	})
 
-	request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
-	request.Header.Set("Content-Type", "application/json")
-	response := httptest.NewRecorder()
+	It("any handle route not matched", func() {
 
-	AnyHandle(response, request, nil)
+		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
+		request.Header.Set("Content-Type", "application/json")
+		response := httptest.NewRecorder()
 
-	if response.Code != http.StatusInternalServerError && response.Body.String() != "Route not matched!" {
-		t.Errorf("Response code should have been internal error nut was %d", response.Code)
-		t.FailNow()
-	}
-}
+		AnyHandle(response, request, nil)
 
-func TestAnyHandleRouteMatched(t *testing.T) {
+		Expect(response.Code).To(Equal(http.StatusInternalServerError))
+		Expect(response.Body.String()).To(Equal("Route not matched!"))
+	})
 
-	routes.Register.Register(http.MethodGet, routes.JSON, "/tests", "hello world!", http.StatusCreated)
+	It("any handle route matched", func() {
 
-	request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
-	request.Header.Set("Content-Type", "application/json")
-	response := httptest.NewRecorder()
+		routes.Register.Register(http.MethodGet, routes.JSON, "/tests", "hello world!", http.StatusCreated)
 
-	AnyHandle(response, request, nil)
+		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
+		request.Header.Set("Content-Type", "application/json")
+		response := httptest.NewRecorder()
 
-	if response.Code != http.StatusCreated && response.Body.String() != "hello world!" {
-		t.Errorf("Response code should have been internal error nut was %d", response.Code)
-		t.FailNow()
-	}
-}
+		AnyHandle(response, request, nil)
+
+		Expect(response.Code).To(Equal(http.StatusCreated))
+		Expect(response.Body.String()).To(Equal("hello world!"))
+	})
+})
