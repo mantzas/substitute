@@ -14,6 +14,8 @@ var _ = Describe("handles", func() {
 
 	It("any handle with no content type", func() {
 
+		routes.Register.Clear()
+
 		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
 
 		response := httptest.NewRecorder()
@@ -26,6 +28,8 @@ var _ = Describe("handles", func() {
 
 	It("any handle route not matched", func() {
 
+		routes.Register.Clear()
+
 		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
 		request.Header.Set("Content-Type", "application/json")
 		response := httptest.NewRecorder()
@@ -37,6 +41,8 @@ var _ = Describe("handles", func() {
 	})
 
 	It("any handle route matched", func() {
+
+		routes.Register.Clear()
 
 		routes.Register.Register(http.MethodGet, routes.JSON, "/tests", "hello world!", http.StatusCreated)
 
