@@ -1,10 +1,10 @@
 package handles
 
 import (
+	"github.com/mantzas/substitute/routes"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"github.com/mantzas/substitute/routes"
 )
 
 func TestAnyHandleNoContentType(t *testing.T) {
@@ -37,7 +37,7 @@ func TestAnyHandleRouteNotMatched(t *testing.T) {
 
 func TestAnyHandleRouteMatched(t *testing.T) {
 
-    routes.Register.Register(http.MethodGet, routes.JSON, "/tests", "hello world!", http.StatusCreated)
+	routes.Register.Register(http.MethodGet, routes.JSON, "/tests", "hello world!", http.StatusCreated)
 
 	request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
 	request.Header.Set("Content-Type", "application/json")
