@@ -6,6 +6,7 @@ before_script:
     - go get golang.org/x/tools/cmd/cover
     - go get github.com/mattn/goveralls
 script: 
+   - chmod ugo+x testallpackages.sh 
    - ./testallpackages.sh
     
 after_success:
