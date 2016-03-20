@@ -6,9 +6,7 @@ before_script:
     - go get golang.org/x/tools/cmd/cover
     - go get github.com/mattn/goveralls
 script: 
-    - go test -v -covermode=count -coverprofile=coverage.out .
-    - go test -v -covermode=count -coverprofile=coverage_http_handles.out ./http/handles/...
+   - ./testallpackages.bash
     
 after_success:
     - $HOME/gopath/bin/goveralls -covermode=count -coverprofile=coverage.out -service=travis-ci
-    - $HOME/gopath/bin/goveralls -covermode=count -coverprofile=coverage_http_handles.out -service=travis-ci
