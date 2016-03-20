@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"regexp"
 )
 
@@ -12,6 +13,19 @@ const (
 	JSON RequestType = iota // JSON reuest type
 	XML                     //XML request type
 )
+
+// ContentTypeToRequestType map content type to request type
+func ContentTypeToRequestType(contentType string) (RequestType, error) {
+
+	switch contentType {
+	case "application/json":
+		return JSON, nil
+	case "application/xml":
+		return XML, nil
+	default:
+		return -1, fmt.Errorf("Unable to map %s to request type!", contentType)
+	}
+}
 
 // RouteRegistration contains a registered route
 type RouteRegistration struct {

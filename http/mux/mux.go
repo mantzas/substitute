@@ -5,6 +5,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/mantzas/substitute/http/middleware"
+	"github.com/mantzas/substitute/routes"
 )
 
 // GetServerMux creates the default request mux
@@ -21,8 +22,4 @@ func GetServerMux() *httprouter.Router {
 	return router
 }
 
-func anyHandle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("handler2"))
-}
