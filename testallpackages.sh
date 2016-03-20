@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "mode: count" > coverage.out
 
 for pkg in $(go list ./... | grep -v '/vendor/')
