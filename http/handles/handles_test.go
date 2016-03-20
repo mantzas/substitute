@@ -32,8 +32,8 @@ var _ = Describe("handles", func() {
 
 		AnyHandle(response, request, nil)
 
-		Expect(response.Code).To(Equal(http.StatusInternalServerError))
 		Expect(response.Body.String()).To(Equal("Route not matched!"))
+		Expect(response.Code).To(Equal(http.StatusInternalServerError))
 	})
 
 	It("any handle route matched", func() {

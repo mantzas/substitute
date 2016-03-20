@@ -32,9 +32,9 @@ var _ = Describe("RouteRegister", func() {
 	It("can match", func() {
 
 		Register.Clear()
-		Register.Register(http.MethodGet, JSON, "/users", "users response", http.StatusOK)
-		Register.Register(http.MethodGet, JSON, `/users/\d`, "specific user response", http.StatusOK)
-		Register.Register(http.MethodPost, JSON, "/users", "test response", http.StatusCreated)
+		Register.Register(http.MethodGet, JSON, `\/users$`, "users response", http.StatusOK)
+		Register.Register(http.MethodGet, JSON, `\/users\/\d`, "specific user response", http.StatusOK)
+		Register.Register(http.MethodPost, JSON, `\/users$`, "test response", http.StatusCreated)
 		Expect(len(Register.routes)).To(Equal(3))
 
 		matched, content, responseStatus := Register.Match(http.MethodGet, JSON, "/users/1")

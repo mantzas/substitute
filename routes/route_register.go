@@ -74,7 +74,7 @@ func (rr *RouteRegister) Match(method string, requestType RequestType, route str
 
 	for _, r := range rr.routes {
 
-		if r.HTTPMethod == method || r.Type == requestType || r.RouteRegex.MatchString(route) {
+		if r.HTTPMethod == method && r.Type == requestType && r.RouteRegex.MatchString(route) {
 			return true, r.Response, r.Status
 		}
 	}
