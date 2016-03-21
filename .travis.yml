@@ -12,4 +12,4 @@ script:
     - chmod ugo+x mergecoverages.sh 
     - ./mergecoverages.sh    
 after_success:
-    - $HOME/gopath/bin/goveralls -covermode=count -coverprofile=substitute.coverprofile -service=travis-ci
+    - $HOME/gopath/bin/goveralls -covermode=atomic -coverprofile=substitute.coverprofile -service=travis-ci
