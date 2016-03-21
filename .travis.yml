@@ -7,6 +7,9 @@ before_script:
     - go get -v github.com/onsi/gomega
     - go get golang.org/x/tools/cmd/cover
     - go get github.com/mattn/goveralls
-script:  ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2    
+script:  
+    - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
+    - chmod ugo+x mergecoverages.sh 
+    - ./mergecoverages.sh    
 after_success:
     - $HOME/gopath/bin/goveralls -covermode=count -coverprofile=substitute.coverprofile -service=travis-ci
