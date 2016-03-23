@@ -6,6 +6,7 @@ import (
 
 	"github.com/mantzas/substitute/routes"
 
+	"bytes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -16,7 +17,7 @@ var _ = Describe("handles", func() {
 
 		routes.Register.Clear()
 
-		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
+		request, _ := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer([]byte("")))
 
 		response := httptest.NewRecorder()
 
@@ -30,7 +31,7 @@ var _ = Describe("handles", func() {
 
 		routes.Register.Clear()
 
-		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
+		request, _ := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer([]byte("")))
 		request.Header.Set("Content-Type", "application/json")
 		response := httptest.NewRecorder()
 
@@ -44,9 +45,9 @@ var _ = Describe("handles", func() {
 
 		routes.Register.Clear()
 
-		routes.Register.Register(http.MethodGet, routes.JSON, "/tests", "hello world!", http.StatusCreated)
+		routes.Register.Register(http.MethodGet, routes.JSON, "/tests", "", "hello world!", http.StatusCreated)
 
-		request, _ := http.NewRequest(http.MethodGet, "/tests", nil)
+		request, _ := http.NewRequest(http.MethodGet, "/tests", bytes.NewBuffer([]byte("")))
 		request.Header.Set("Content-Type", "application/json")
 		response := httptest.NewRecorder()
 

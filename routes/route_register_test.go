@@ -13,7 +13,7 @@ var _ = Describe("RouteRegister", func() {
 
 		Register.Clear()
 
-		err := Register.Register(http.MethodPost, JSON, "", "test respnse", http.StatusOK)
+		err := Register.Register(http.MethodPost, JSON, "", "test request", "test response", http.StatusOK)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(len(Register.routes)).To(Equal(1))
@@ -22,7 +22,7 @@ var _ = Describe("RouteRegister", func() {
 	It("can clear", func() {
 
 		Register.Clear()
-		Register.Register(http.MethodPost, JSON, "", "test respnse", http.StatusOK)
+		Register.Register(http.MethodPost, JSON, "", "test request", "test response", http.StatusOK)
 		Expect(len(Register.routes)).To(Equal(1))
 
 		Register.Clear()
@@ -32,12 +32,12 @@ var _ = Describe("RouteRegister", func() {
 	It("can match", func() {
 
 		Register.Clear()
-		Register.Register(http.MethodGet, JSON, `\/users$`, "users response", http.StatusOK)
-		Register.Register(http.MethodGet, JSON, `\/users\/\d`, "specific user response", http.StatusOK)
-		Register.Register(http.MethodPost, JSON, `\/users$`, "test response", http.StatusCreated)
+		Register.Register(http.MethodGet, JSON, `\/users$`, "users request", "users response", http.StatusOK)
+		Register.Register(http.MethodGet, JSON, `\/users\/\d`, "specific user request", "specific user response", http.StatusOK)
+		Register.Register(http.MethodPost, JSON, `\/users$`, "test request", "test response", http.StatusCreated)
 		Expect(len(Register.routes)).To(Equal(3))
 
-		matched, content, responseStatus := Register.Match(http.MethodGet, JSON, "/users/1")
+		matched, content, responseStatus := Register.Match(http.MethodGet, JSON, "/users/1", "specific user request")
 		Expect(matched).To(BeTrue())
 		Expect(content).To(Equal("specific user response"))
 		Expect(responseStatus).To(Equal(http.StatusOK))
@@ -46,7 +46,7 @@ var _ = Describe("RouteRegister", func() {
 	It("cannot match", func() {
 		Register.Clear()
 
-		matched, _, _ := Register.Match(http.MethodGet, JSON, "/users/1")
+		matched, _, _ := Register.Match(http.MethodGet, JSON, "/users/1", "specific user request")
 		Expect(matched).To(BeFalse())
 	})
 })

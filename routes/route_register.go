@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"regexp"
+	"strings"
 )
 
 // RequestType defines the type of request
@@ -10,27 +11,37 @@ type RequestType int
 
 // Request Type enum
 const (
-	JSON RequestType = iota // JSON reuest type
-	XML                     //XML request type
+	JSON   RequestType = iota // JSON reuest type
+	SOAP                      // SOAP request type
+	SOAP12                    // SOAP 1.2 request type
 )
 
 // ContentTypeToRequestType map content type to request type
 func ContentTypeToRequestType(contentType string) (RequestType, error) {
 
-	switch contentType {
-	case "application/json":
+	if strings.HasPrefix(contentType, "application/json") {
+
 		return JSON, nil
-	case "application/xml":
-		return XML, nil
-	default:
-		return -1, fmt.Errorf("Unable to map %s to request type!", contentType)
 	}
+
+	if strings.HasPrefix(contentType, "text/xml") {
+
+		return SOAP, nil
+	}
+
+	if strings.HasPrefix(contentType, "application/soap+xml") {
+
+		return SOAP12, nil
+	}
+
+	return -1, fmt.Errorf("Unable to map %s to request type!", contentType)
 }
 
 // RouteRegistration contains a registered route
 type RouteRegistration struct {
 	HTTPMethod string
 	RouteRegex *regexp.Regexp
+	Request    string
 	Response   string
 	Type       RequestType
 	Status     int
@@ -47,7 +58,8 @@ type RouteRegister struct {
 }
 
 // Register a route
-func (rr *RouteRegister) Register(method string, requestType RequestType, routeRegex string, response string, status int) error {
+func (rr *RouteRegister) Register(method string, requestType RequestType, routeRegex string,
+	request string, response string, status int) error {
 
 	r, err := regexp.Compile(routeRegex)
 	if err != nil {
@@ -57,6 +69,7 @@ func (rr *RouteRegister) Register(method string, requestType RequestType, routeR
 	rr.routes = append(rr.routes, RouteRegistration{
 		HTTPMethod: method,
 		Response:   response,
+		Request:    request,
 		Type:       requestType,
 		RouteRegex: r,
 		Status:     status,
@@ -70,7 +83,8 @@ func (rr *RouteRegister) Clear() {
 }
 
 // Match a registration
-func (rr *RouteRegister) Match(method string, requestType RequestType, route string) (bool, string, int) {
+func (rr *RouteRegister) Match(method string, requestType RequestType, route string,
+	request string) (bool, string, int) {
 
 	for _, r := range rr.routes {
 
