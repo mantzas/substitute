@@ -23,14 +23,14 @@ func main() {
 	fmt.Printf("Service starting on port %d with management port %d.", *port, *portMgmt)
 	fmt.Println()
 
-	adaptlog.Configure(new(log.Logger), adaptlog.AnyLevel)
+	adaptlog.ConfigureSimpleLogger(new(log.Logger))
 
 	go func() {
 
 		fmt.Println("Starting management service.")
-		adaptlog.Fatal(http.ListenAndServe(":8081", mux.GetMgmtServerMux()))
+		adaptlog.Simple.Fatal(http.ListenAndServe(":8081", mux.GetMgmtServerMux()))
 	}()
 
 	fmt.Println("Starting service.")
-	adaptlog.Fatal(http.ListenAndServe(":8080", mux.GetServerMux()))
+	adaptlog.Simple.Fatal(http.ListenAndServe(":8080", mux.GetServerMux()))
 }

@@ -1,8 +1,8 @@
-hash: 8280cc0992063925b238db0e142bcee56d42030b49f2017eaffbfc38ffe920f3
-updated: 2016-03-23T22:02:11.0725998+02:00
+hash: de98af919c2b3cb7eba4fc093e3c2cbc4957795ebffd4bd08f3847ef19d5e545
+updated: 2016-03-23T23:12:23.1965865+02:00
 imports:
 - name: github.com/julienschmidt/httprouter
   version: 8c199fb6259ffc1af525cc3ad52ee60ba8359669
 - name: github.com/mantzas/adaptlog
-  version: 5426523bbc2e4c7fb0fabc910311e7606f22a237
+  version: 930d06b401fc492dc240ee7a1f064d8ffa5e96ee
 devImports: []

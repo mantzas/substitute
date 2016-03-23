@@ -18,7 +18,7 @@ func AnyHandle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		message := "Error reading body!"
-		adaptlog.Fatal(message)
+		adaptlog.Simple.Print(message)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(message))
 		return

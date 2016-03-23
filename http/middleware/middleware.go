@@ -52,7 +52,7 @@ func LoggingMiddleware(next httprouter.Handle) httprouter.Handle {
 		lw := &statusLoggingResponseWriter{-1, false, w}
 		startTime := time.Now()
 		next(lw, r, ps)
-		adaptlog.Printf("host=%s method=%s route=%s status=%d time=%s params=%s", r.Host, r.Method, r.URL.String(), lw.status, time.Since(startTime), ps)
+		adaptlog.Simple.Printf("host=%s method=%s route=%s status=%d time=%s params=%s", r.Host, r.Method, r.URL.String(), lw.status, time.Since(startTime), ps)
 	}
 }
 
@@ -63,7 +63,7 @@ func RecoveryMiddleware(next httprouter.Handle) httprouter.Handle {
 
 		defer func() {
 			if err := recover(); err != nil {
-				adaptlog.Printf("[ERROR] %s", err)
+				adaptlog.Simple.Printf("[ERROR] %s", err)
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 		}()
