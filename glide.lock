@@ -1,8 +1,38 @@
-hash: de98af919c2b3cb7eba4fc093e3c2cbc4957795ebffd4bd08f3847ef19d5e545
-updated: 2016-03-23T23:12:23.1965865+02:00
+hash: e6a1c208ca93830ca37815b2ece12e7d29122cc1dadc59ad7b31ebe4043b5bc2
+updated: 2017-02-21T22:54:57.1900363+02:00
 imports:
 - name: github.com/julienschmidt/httprouter
   version: 8c199fb6259ffc1af525cc3ad52ee60ba8359669
 - name: github.com/mantzas/adaptlog
   version: 930d06b401fc492dc240ee7a1f064d8ffa5e96ee
-devImports: []
+testImports:
+- name: github.com/onsi/ginkgo
+  version: 462326b1628e124b23f42e87a8f2750e3c4e2d24
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - types
+- name: github.com/onsi/gomega
+  version: a78ae492d53aad5a7a232d0d0462c14c400e3ee7
+  subpackages:
+  - format
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
